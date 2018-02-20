@@ -105,8 +105,8 @@ public class Controller {
         double rectnewTranslateY = rectorgTranslateY - offsetY*smallScaleY*(1/mainimgview.getScaleX());
 
         if (rectangle.getWidth()<smallimgview.getFitWidth() &&
-            960-(mainimgview.getImage().getWidth()/2*mainimgview.getScaleX()-Math.abs(newTranslateX))<=0 &&
-            540-(mainimgview.getImage().getHeight()/2*mainimgview.getScaleY()-Math.abs(newTranslateY))<=0){
+            960-(((mainimgview.getFitWidth()/2)*mainimgview.getScaleX())-Math.abs(newTranslateX))<=0 &&
+            540-((((1/(mainimgview.getImage().getWidth()/(mainimgview.getImage().getHeight()*mainimgview.getFitWidth())))/2)*mainimgview.getScaleY())-Math.abs(newTranslateY))<=0){
 
                 mainimgview.setTranslateX(newTranslateX);
                 mainimgview.setTranslateY(newTranslateY);
@@ -123,6 +123,7 @@ public class Controller {
             rectangle.setWidth(rectangle.getWidth()*0.8);
             rectangle.setHeight(rectangle.getHeight()*0.8);
             zoomslider.setValue(mainimgview.getScaleX());
+            System.out.println(mainimgview.getImage().getWidth());
         }
         else if(1.25*rectangle.getWidth() <= smallimgview.getFitWidth()){
             mainimgview.setScaleX(mainimgview.getScaleX()*0.8);
