@@ -123,7 +123,6 @@ public class Controller {
             rectangle.setWidth(rectangle.getWidth()*0.8);
             rectangle.setHeight(rectangle.getHeight()*0.8);
             zoomslider.setValue(mainimgview.getScaleX());
-            System.out.println(mainimgview.getImage().getWidth());
         }
         else if(1.25*rectangle.getWidth() <= smallimgview.getFitWidth()){
             mainimgview.setScaleX(mainimgview.getScaleX()*0.8);
