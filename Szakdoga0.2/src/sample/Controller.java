@@ -69,6 +69,7 @@ public class Controller {
             mainimgview.setImage(pictureImg);
             smallimgview.setImage(pictureImg);
             mainimgview.setFitWidth(1920);
+            mainimgview.setFitHeight((mainimgview.getImage().getHeight()*mainimgview.getFitWidth())/mainimgview.getImage().getWidth());
             mainimgview.setPreserveRatio(true);
             mainimgview.toBack();
             StackPane.setAlignment(mainimgview, Pos.CENTER);
@@ -106,7 +107,7 @@ public class Controller {
 
         if (rectangle.getWidth()<smallimgview.getFitWidth() &&
             960-(((mainimgview.getFitWidth()/2)*mainimgview.getScaleX())-Math.abs(newTranslateX))<=0 &&
-            540-((((1/(mainimgview.getImage().getWidth()/(mainimgview.getImage().getHeight()*mainimgview.getFitWidth())))/2)*mainimgview.getScaleY())-Math.abs(newTranslateY))<=0){
+            540-(((mainFitHeight/2)*mainimgview.getScaleY())-Math.abs(newTranslateY))<=0){
 
                 mainimgview.setTranslateX(newTranslateX);
                 mainimgview.setTranslateY(newTranslateY);
