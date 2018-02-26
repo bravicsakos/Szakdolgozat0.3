@@ -117,20 +117,33 @@ public class Controller {
     }
 
     public void handleScroll(ScrollEvent e){
+
+        double oldtranslateX = mainimgview.getTranslateX();
+        double oldtranslateY = mainimgview.getTranslateY();
+
         if (e.getDeltaY()>0 && rectangle.getWidth() > 10) {
+            mainimgview.setTranslateX(0);
+            mainimgview.setTranslateY(0);
             mainimgview.setScaleX(mainimgview.getScaleX()*1.25);
             mainimgview.setScaleY(mainimgview.getScaleY()*1.25);
             rectangle.setWidth(rectangle.getWidth()*0.8);
             rectangle.setHeight(rectangle.getHeight()*0.8);
-            zoomslider.setValue(mainimgview.getScaleX());
+            mainimgview.setTranslateX(oldtranslateX*1.25);
+            mainimgview.setTranslateY(oldtranslateY*1.25);
+
+
         }
         else if(1.25*rectangle.getWidth() <= smallimgview.getFitWidth()){
+            mainimgview.setTranslateX(0);
+            mainimgview.setTranslateY(0);
             mainimgview.setScaleX(mainimgview.getScaleX()*0.8);
             mainimgview.setScaleY(mainimgview.getScaleY()*0.8);
             rectangle.setWidth(rectangle.getWidth()*1.25);
             rectangle.setHeight(rectangle.getHeight()*1.25);
-            zoomslider.setValue(mainimgview.getScaleX());
-        }
+            mainimgview.setTranslateX(oldtranslateX*0.8);
+            mainimgview.setTranslateY(oldtranslateY*0.8);
+            }
+
         else {
             mainimgview.setTranslateX(0);
             mainimgview.setTranslateY(0);
