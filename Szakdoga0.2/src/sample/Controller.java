@@ -107,7 +107,7 @@ public class Controller {
 
         if (rectangle.getWidth()<smallimgview.getFitWidth() &&
             960-(((mainimgview.getFitWidth()/2)*mainimgview.getScaleX())-Math.abs(newTranslateX))<=0 &&
-            540-(((mainFitHeight/2)*mainimgview.getScaleY())-Math.abs(newTranslateY))<=0){
+            540-(((mainimgview.getFitHeight()/2)*mainimgview.getScaleY())-Math.abs(newTranslateY))<=0){
 
                 mainimgview.setTranslateX(newTranslateX);
                 mainimgview.setTranslateY(newTranslateY);
