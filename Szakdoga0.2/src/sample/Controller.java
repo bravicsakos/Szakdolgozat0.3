@@ -66,6 +66,8 @@ public class Controller {
 
     private final static File initialFile = new File("src");
 
+    private static int snappedCounter = 1;
+
 
     public void initialize() {
         FileChooser.ExtensionFilter extensionFilterPNG = makeFilter("png");
@@ -135,16 +137,18 @@ public class Controller {
             Rectangle2D snapshotBounds = new Rectangle2D(snapMinX,snapMinY,snapwidth,snapheight);
             SnapshotParameters snapParams = new SnapshotParameters();
             WritableImage snapImage = new WritableImage(snapwidth,snapheight);
-            File snappedImage = new File("snap.png");
+            File snappedImage = new File("snap" + snappedCounter + ".png");
 
             snapParams.setViewport(snapshotBounds);
             snapImage = mainimgview.snapshot(snapParams,null);
             try {
                 ImageIO.write(SwingFXUtils.fromFXImage(snapImage, null), "png", snappedImage);
+                snappedCounter++;
             }
             catch (IOException ex){
                 System.err.println("IOException at take snapshot");
             }
+
         }
     }
 
