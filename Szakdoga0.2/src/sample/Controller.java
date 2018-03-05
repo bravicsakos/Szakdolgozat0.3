@@ -1,14 +1,18 @@
 package sample;
 
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -20,17 +24,23 @@ import java.net.MalformedURLException;
 public class Controller {
     // @FXML változók ------------------------------------
     @FXML
-    Button openfilebtn = new Button();
+    Button openfilebtn;
     @FXML
-    ImageView mainimgview = new ImageView();
+    ImageView mainimgview;
     @FXML
-    ImageView smallimgview = new ImageView();
+    ImageView smallimgview;
     @FXML
-    Button exitbtn = new Button();
+    Button exitbtn;
     @FXML
     Rectangle rectangle;
     @FXML
     Slider zoomslider;
+    @FXML
+    Text coordinates;
+    @FXML
+    BorderPane mainPane;
+    @FXML
+    ColorPicker colorPicker;
 
 
 
@@ -49,6 +59,7 @@ public class Controller {
 
     private final static File initialFile = new File("src");
 
+
     public void initialize() {
         FileChooser.ExtensionFilter extensionFilterPNG = makeFilter("png");
         FileChooser.ExtensionFilter extensionFilterJPG = makeFilter("jpg");
@@ -62,6 +73,8 @@ public class Controller {
         fileChooser.setSelectedExtensionFilter(extensionFilterJPEG);
         fileChooser.setTitle("Choose your file");
         fileChooser.setInitialDirectory(initialFile);
+
+        coordinates.setFill(colorPicker.getValue());
     }
 
     public void handleOpenfilebtn(){
@@ -173,6 +186,25 @@ public class Controller {
     public void handleExitbtn(){
         Stage stage = (Stage) exitbtn.getScene().getWindow();
         stage.close();
+    }
+
+    public void handleMouseMovement(MouseEvent event){
+        double mousePosComponentX = event.getSceneX()/mainimgview.getScaleX();
+        double mousePosComponentY = event.getSceneY()/mainimgview.getScaleX();
+        double scrollComponentX = screenWidth*(mainimgview.getScaleX()-1)/(2*mainimgview.getScaleX());
+        double scrollComponentY = screenHeight*(mainimgview.getScaleY()-1)/(2*mainimgview.getScaleY());
+        double dragComponentX = mainimgview.getTranslateX()*(1/mainimgview.getScaleX());
+        double dragComponentY = mainimgview.getTranslateY()*(1/mainimgview.getScaleY());
+
+        double mouseCoordX = mousePosComponentX + scrollComponentX - dragComponentX;
+        double mouseCoordY = mousePosComponentY + scrollComponentY - dragComponentY;
+
+        coordinates.setText("X Coordinate: " + Math.round(mouseCoordX) + "\nY Coordinate: " + Math.round(mouseCoordY));
+    }
+
+    public void handleColorPicker(){
+        System.out.println("jeee");
+        coordinates.setFill(colorPicker.getValue());
     }
 
     private static void doScale(ImageView imgview, double scale){
