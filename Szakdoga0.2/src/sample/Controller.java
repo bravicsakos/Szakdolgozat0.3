@@ -203,7 +203,6 @@ public class Controller {
     }
 
     public void handleColorPicker(){
-        System.out.println("jeee");
         coordinates.setFill(colorPicker.getValue());
     }
 
