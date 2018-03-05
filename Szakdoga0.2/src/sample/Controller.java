@@ -1,12 +1,17 @@
 package sample;
 
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
@@ -16,8 +21,10 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 
 
@@ -104,13 +111,41 @@ public class Controller {
     }
 
     public void handleMouseClick(MouseEvent event){
-        orgSceneX = event.getSceneX();
-        orgSceneY = event.getSceneY();
-        orgTranslateX = mainimgview.getTranslateX();
-        orgTranslateY = mainimgview.getTranslateY();
-        rectorgTranslateX = rectangle.getTranslateX();
-        rectorgTranslateY = rectangle.getTranslateY();
 
+        MouseButton buttonpressed = event.getButton();
+
+        //Drag functions -----------------------------------------
+        if (buttonpressed == MouseButton.PRIMARY) {
+            orgSceneX = event.getSceneX();
+            orgSceneY = event.getSceneY();
+            orgTranslateX = mainimgview.getTranslateX();
+            orgTranslateY = mainimgview.getTranslateY();
+            rectorgTranslateX = rectangle.getTranslateX();
+            rectorgTranslateY = rectangle.getTranslateY();
+        }
+        //--------------------------------------------------------
+
+        //Snapshot functions--------------------------------------
+        else if (buttonpressed == MouseButton.SECONDARY){
+            int snapwidth = (int) Math.round(screenWidth);
+            int snapheight = (int) Math.round(screenHeight);
+            int snapMinX = (int) Math.round(event.getSceneX() - (screenWidth/2));
+            int snapMinY = (int) Math.round(event.getSceneY() - (screenHeight/2));
+
+            Rectangle2D snapshotBounds = new Rectangle2D(snapMinX,snapMinY,snapwidth,snapheight);
+            SnapshotParameters snapParams = new SnapshotParameters();
+            WritableImage snapImage = new WritableImage(snapwidth,snapheight);
+            File snappedImage = new File("snap.png");
+
+            snapParams.setViewport(snapshotBounds);
+            snapImage = mainimgview.snapshot(snapParams,null);
+            try {
+                ImageIO.write(SwingFXUtils.fromFXImage(snapImage, null), "png", snappedImage);
+            }
+            catch (IOException ex){
+                System.err.println("IOException at take snapshot");
+            }
+        }
     }
 
     public void handleMouseDrag(MouseEvent event){
