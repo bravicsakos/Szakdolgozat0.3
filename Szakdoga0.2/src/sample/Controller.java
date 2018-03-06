@@ -137,7 +137,7 @@ public class Controller {
             Rectangle2D snapshotBounds = new Rectangle2D(snapMinX,snapMinY,snapwidth,snapheight);
             SnapshotParameters snapParams = new SnapshotParameters();
             WritableImage snapImage = new WritableImage(snapwidth,snapheight);
-            File snappedImage = new File("SnappedPicture" + snappedCounter + ".png");
+            File snappedImage = new File("snap" + snappedCounter + ".png");
 
             snapParams.setViewport(snapshotBounds);
             snapImage = mainimgview.snapshot(snapParams,null);
@@ -182,7 +182,7 @@ public class Controller {
         double rectScaleDownValue = 1/mainimgScaleUpValue;
         double rectScaleUpValue = 1/mainimgScaleDownValue;
 
-        if (scrollValue>0 && rectangle.getWidth() > 10) {
+        if (scrollValue>0 && rectangle.getWidth()*rectScaleDownValue > 10) {
             goToOrgPos(mainimgview);
             doScale(mainimgview,mainimgScaleUpValue);
             doScale(rectangle,rectScaleDownValue);
@@ -191,7 +191,7 @@ public class Controller {
 
 
         }
-        else if(mainimgScaleUpValue*rectangle.getWidth() <= smallimgview.getFitWidth()){
+        else if(scrollValue<0 && rectScaleUpValue*rectangle.getWidth() < smallimgview.getFitWidth()){
             goToOrgPos(mainimgview);
             doScale(mainimgview,mainimgScaleDownValue);
             doScale(rectangle,rectScaleUpValue);
@@ -199,7 +199,7 @@ public class Controller {
             zoomslider.setValue(mainimgview.getScaleX());
             }
 
-        else {
+        else if (rectScaleUpValue*rectangle.getWidth() >= smallimgview.getFitWidth()){
             goToOrgPos(mainimgview);
             goToOrgPos(rectangle);
             mainimgview.setScaleX(1);
