@@ -137,7 +137,7 @@ public class Controller {
             Rectangle2D snapshotBounds = new Rectangle2D(snapMinX,snapMinY,snapwidth,snapheight);
             SnapshotParameters snapParams = new SnapshotParameters();
             WritableImage snapImage = new WritableImage(snapwidth,snapheight);
-            File snappedImage = new File("snap" + snappedCounter + ".png");
+            File snappedImage = new File("SnappedPicture" + snappedCounter + ".png");
 
             snapParams.setViewport(snapshotBounds);
             snapImage = mainimgview.snapshot(snapParams,null);
