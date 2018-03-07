@@ -1,3 +1,6 @@
+
+# __Readme fájl nem naprakész!!__
+
 # __Szakdolgozat0.3__
 
 ## Jelenlegi feature-ök:
