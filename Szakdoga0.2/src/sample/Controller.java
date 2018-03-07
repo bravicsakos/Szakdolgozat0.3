@@ -1,10 +1,11 @@
 package sample;
 
-
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Slider;
@@ -43,6 +44,10 @@ public class Controller {
     @FXML
     Slider zoomslider;
     @FXML
+    Canvas canvasGo;
+    @FXML
+    Button drawbutton;
+    @FXML
     Text coordinates;
     @FXML
     BorderPane mainPane;
@@ -51,8 +56,10 @@ public class Controller {
 
 
 
+
     // Egyéb változók ------------------------------------
     private FileChooser fileChooser = new FileChooser();
+    private final static File initialFile = new File("src");
 
     private double orgSceneX, orgSceneY;
     private double orgTranslateX, orgTranslateY;
@@ -63,11 +70,15 @@ public class Controller {
     private final static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private final static double screenWidth = screenSize.getWidth();
     private final static double screenHeight = screenSize.getHeight();
-
-    private final static File initialFile = new File("src");
-
+    //Draw változók-------------------------------------
+    private boolean isDrawMode = false;
+    private GraphicsContext gcF;
+    private double  lastX,lastY,oldX,oldY;
+    //Snap változók-------------------------------------
     private static int snappedCounter = 1;
 
+    public Controller() {
+    }
 
     public void initialize() {
         FileChooser.ExtensionFilter extensionFilterPNG = makeFilter("png");
@@ -82,6 +93,9 @@ public class Controller {
         fileChooser.setSelectedExtensionFilter(extensionFilterJPEG);
         fileChooser.setTitle("Choose your file");
         fileChooser.setInitialDirectory(initialFile);
+
+        gcF = canvasGo.getGraphicsContext2D();
+        canvasGo.setVisible(false);
 
         coordinates.setFill(colorPicker.getValue());
     }
@@ -112,62 +126,71 @@ public class Controller {
         rectangle.setWidth(smallimgview.getFitWidth());
     }
 
-    public void handleMouseClick(MouseEvent event){
-
+    public void handleMouseClick(MouseEvent event) {
         MouseButton buttonpressed = event.getButton();
 
-        //Drag functions -----------------------------------------
-        if (buttonpressed == MouseButton.PRIMARY) {
-            orgSceneX = event.getSceneX();
-            orgSceneY = event.getSceneY();
-            orgTranslateX = mainimgview.getTranslateX();
-            orgTranslateY = mainimgview.getTranslateY();
-            rectorgTranslateX = rectangle.getTranslateX();
-            rectorgTranslateY = rectangle.getTranslateY();
-        }
-        //--------------------------------------------------------
-
-        //Snapshot functions--------------------------------------
-        else if (buttonpressed == MouseButton.SECONDARY){
-            int snapwidth = (int) Math.round(screenWidth);
-            int snapheight = (int) Math.round(screenHeight);
-            int snapMinX = (int) Math.round(event.getSceneX() - (screenWidth/2));
-            int snapMinY = (int) Math.round(event.getSceneY() - (screenHeight/2));
-
-            Rectangle2D snapshotBounds = new Rectangle2D(snapMinX,snapMinY,snapwidth,snapheight);
-            SnapshotParameters snapParams = new SnapshotParameters();
-            WritableImage snapImage = new WritableImage(snapwidth,snapheight);
-            File snappedImage = new File("snap" + snappedCounter + ".png");
-
-            snapParams.setViewport(snapshotBounds);
-            snapImage = mainimgview.snapshot(snapParams,null);
-            try {
-                ImageIO.write(SwingFXUtils.fromFXImage(snapImage, null), "png", snappedImage);
-                snappedCounter++;
+        if (isDrawMode) {
+            this.oldX = event.getX();
+            this.oldY = event.getY();
+        } else
+        {
+            if (buttonpressed == MouseButton.PRIMARY) {
+                orgSceneX = event.getSceneX();
+                orgSceneY = event.getSceneY();
+                orgTranslateX = mainimgview.getTranslateX();
+                orgTranslateY = mainimgview.getTranslateY();
+                rectorgTranslateX = rectangle.getTranslateX();
+                rectorgTranslateY = rectangle.getTranslateY();
             }
-            catch (IOException ex){
-                System.err.println("IOException at take snapshot");
-            }
+            //Snapshot functions--------------------------------------
+            else if (buttonpressed == MouseButton.SECONDARY){
+                int snapwidth = (int) Math.round(screenWidth);
+                int snapheight = (int) Math.round(screenHeight);
+                int snapMinX = (int) Math.round(event.getSceneX() - (screenWidth/2));
+                int snapMinY = (int) Math.round(event.getSceneY() - (screenHeight/2));
 
+                Rectangle2D snapshotBounds = new Rectangle2D(snapMinX,snapMinY,snapwidth,snapheight);
+                SnapshotParameters snapParams = new SnapshotParameters();
+                WritableImage snapImage = new WritableImage(snapwidth,snapheight);
+                File snappedImage = new File("snap" + snappedCounter + ".png");
+
+                snapParams.setViewport(snapshotBounds);
+                snapImage = mainimgview.snapshot(snapParams,null);
+                try {
+                    ImageIO.write(SwingFXUtils.fromFXImage(snapImage, null), "png", snappedImage);
+                    snappedCounter++;
+                }
+                catch (IOException ex){
+                    System.err.println("IOException at take snapshot");
+                }
+            }
         }
     }
 
     public void handleMouseDrag(MouseEvent event){
-        double offsetX = event.getSceneX() - orgSceneX;
-        double offsetY = event.getSceneY() - orgSceneY;
-        double newTranslateX = orgTranslateX + offsetX;
-        double newTranslateY = orgTranslateY + offsetY;
-        double rectnewTranslateX = rectorgTranslateX - offsetX*smallScaleX*(1/mainimgview.getScaleX());
-        double rectnewTranslateY = rectorgTranslateY - offsetY*smallScaleY*(1/mainimgview.getScaleX());
 
-        if (!isFullSize(smallimgview,rectangle) && isInFocus(mainimgview,newTranslateX,newTranslateY)){
+        if(isDrawMode)
+        {
+            this.lastX = event.getX();
+            this.lastY = event.getY();
+            freeDrawing();
+        }else
+        {
+            double offsetX = event.getSceneX() - orgSceneX;
+            double offsetY = event.getSceneY() - orgSceneY;
+            double newTranslateX = orgTranslateX + offsetX;
+            double newTranslateY = orgTranslateY + offsetY;
+            double rectnewTranslateX = rectorgTranslateX - offsetX*smallScaleX*(1/mainimgview.getScaleX());
+            double rectnewTranslateY = rectorgTranslateY - offsetY*smallScaleY*(1/mainimgview.getScaleX());
+
+            if (!isFullSize(smallimgview,rectangle) && isInFocus(mainimgview,newTranslateX,newTranslateY)){
 
                 mainimgview.setTranslateX(newTranslateX);
                 mainimgview.setTranslateY(newTranslateY);
                 rectangle.setTranslateX(rectnewTranslateX);
                 rectangle.setTranslateY(rectnewTranslateY);
+            }
         }
-
     }
 
     public void handleScroll(ScrollEvent e){
@@ -197,7 +220,7 @@ public class Controller {
             doScale(rectangle,rectScaleUpValue);
             moveObj(mainimgview,oldtranslateX*mainimgScaleDownValue,oldtranslateY*mainimgScaleDownValue);
             zoomslider.setValue(mainimgview.getScaleX());
-            }
+        }
 
         else if (rectScaleUpValue*rectangle.getWidth() >= smallimgview.getFitWidth()){
             goToOrgPos(mainimgview);
@@ -209,6 +232,29 @@ public class Controller {
             zoomslider.setValue(mainimgview.getScaleX());
         }
 
+    }
+    public void handleDrawMode()
+    {
+        if(!isDrawMode){
+            isDrawMode = true;
+            canvasGo.setVisible(true);
+        }else{
+            isDrawMode = false;
+            canvasGo.setVisible(false);
+            clearCanvas();
+        }
+    }
+    private void freeDrawing()
+    {
+        gcF.setLineWidth(2);
+        gcF.setStroke(Color.rgb(255,255,0));
+        gcF.strokeLine(oldX, oldY, lastX, lastY);
+        oldX = lastX;
+        oldY = lastY;
+    }
+    private void clearCanvas(){
+        //egyelőre kitörli egy egy rajzolás után azt amit rajzoltunk, de rajzolás közben nem tudunk törölni
+        gcF.clearRect(0, 0, canvasGo.getWidth(), canvasGo.getHeight());
     }
 
     public void handleSlider(){
@@ -226,7 +272,6 @@ public class Controller {
         Stage stage = (Stage) exitbtn.getScene().getWindow();
         stage.close();
     }
-
     public void handleMouseMovement(MouseEvent event){
         double mousePosComponentX = event.getSceneX()/mainimgview.getScaleX();
         double mousePosComponentY = event.getSceneY()/mainimgview.getScaleX();
@@ -240,7 +285,6 @@ public class Controller {
 
         coordinates.setText("X Coordinate: " + Math.round(mouseCoordX) + "\nY Coordinate: " + Math.round(mouseCoordY));
     }
-
     public void handleColorPicker(){
         coordinates.setFill(colorPicker.getValue());
     }
