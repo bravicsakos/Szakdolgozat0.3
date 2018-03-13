@@ -343,8 +343,11 @@ public class Controller {
 
     private boolean isInFocus(ImageView imgview,double newTranslateX,double newTranslateY){
         //a megnyitott kép széleinek távolságát méri aképernyő széleitől, true ha nincs "fehér csík"
-        double distanceX = 960-(((imgview.getFitWidth()/2)*imgview.getScaleX())-Math.abs(newTranslateX));
-        double distanceY = 540-(((imgview.getFitHeight()/2)*imgview.getScaleY())-Math.abs(newTranslateY));
+        int offsetX = 100;
+        int offsetY = 100;
+
+        double distanceX = 960 - (offsetX +(((imgview.getFitWidth()/2)*imgview.getScaleX())-Math.abs(newTranslateX)));
+        double distanceY = 540 - (offsetY +(((imgview.getFitHeight()/2)*imgview.getScaleY())-Math.abs(newTranslateY)));
 
         if (distanceX>0){
             return false;

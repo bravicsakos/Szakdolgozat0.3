@@ -4,6 +4,7 @@ public class SnappedImage {
 
     private int id;
     private String name;
+    private String flagPLACEHOLDER;
     private double minX,minY;
     private double maxX,maxY;
 
@@ -14,6 +15,7 @@ public class SnappedImage {
         this.maxX = maxX;
         this.maxY = maxY;
         this.name = "SnappedImage_" + id + ".png";
+        this.flagPLACEHOLDER = "PLACEHOLDER";
     }
 
     public int getId() {
