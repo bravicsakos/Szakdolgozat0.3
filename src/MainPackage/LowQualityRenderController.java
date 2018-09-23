@@ -10,6 +10,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 
 import static MainPackage.ChooserScreenController.screenController;
+import static MainPackage.Main.settings;
 import static MainPackage.ThumbnailCreationController.mrxsFile;
 
 public class LowQualityRenderController {
@@ -18,11 +19,16 @@ public class LowQualityRenderController {
     ImageView mrxsView;
     @FXML
     Button gridViewButton;
+    @FXML
+    Button exitButton;
 
     private double orgSceneX, orgSceneY;
     private static double orgTranslateX, orgTranslateY;
 
     public void initialize(){
+        exitButton.setText(settings.get("GENERAL","EXIT_BUTTON_TEXT"));
+        exitButton.setOnAction(event -> System.exit(0));
+        gridViewButton.setText(settings.get("LOW_QUALITY_RENDER","GRID_VIEW_BUTTON_TEXT"));
         File temp = mrxsFile;
         try{
             Image mrxsImage = new Image(temp.toURI().toURL().toString());

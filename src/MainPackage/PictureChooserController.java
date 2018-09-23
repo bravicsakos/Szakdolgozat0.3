@@ -9,21 +9,27 @@ import java.io.*;
 import static MainPackage.ChooserScreenController.screenController;
 import static MainPackage.ChooserScreenController.type;
 import static MainPackage.Constants.*;
+import static MainPackage.Main.settings;
 
 public class PictureChooserController {
 
     @FXML
     Button pushMeButton;
+    @FXML
+    Button exitButton;
 
     private static FileChooser fc = new FileChooser();
     private static File initialDirectory = new File(System.getProperty("user.dir"));
 
-    private static final File panoramicViewer = new File("C:\\Program Files (x86)\\3DHISTECH\\Viewer\\MView.exe");
+    private static final File panoramicViewer = new File(settings.get("PICTURE_CHOOSER","PANORAMIC_VIEWER_PATH"));
 
     static File imageFile;
 
     public void initialize(){
         fc.setInitialDirectory(initialDirectory);
+        pushMeButton.setText(settings.get("PICTURE_CHOOSER","PUSHME_BUTTON_TEXT"));
+        exitButton.setText(settings.get("GENERAL","EXIT_BUTTON_TEXT"));
+        exitButton.setOnAction(event -> System.exit(0));
     }
 
     public void handlePushMeButton(){

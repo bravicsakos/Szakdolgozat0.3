@@ -4,6 +4,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="MainPackage.LowQualityRenderController"
@@ -11,8 +12,9 @@
 
     <ImageView fx:id="mrxsView" />
 
-    <HBox alignment="TOP_RIGHT">
-        <Button text="GridView" fx:id="gridViewButton" onAction="#handleGridViewButton"/>
-    </HBox>
+    <VBox alignment="TOP_RIGHT">
+        <Button fx:id="exitButton"/>
+        <Button fx:id="gridViewButton" onAction="#handleGridViewButton"/>
+    </VBox>
 
 </StackPane>

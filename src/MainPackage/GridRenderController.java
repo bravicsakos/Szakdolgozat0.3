@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static MainPackage.ChooserScreenController.screenController;
+import static MainPackage.Main.settings;
 import static MainPackage.PictureRenderer.*;
 import static MainPackage.ThumbnailCreationController.*;
 import static MainPackage.Tracer.*;
@@ -64,7 +66,7 @@ public class GridRenderController {
 
         makeGrid(100, 100);
 
-        Button exitButton = new Button("Quit");
+        Button exitButton = new Button(settings.get("GENERAL","EXIT_BUTTON_TEXT"));
         exitButton.setOnAction(event -> System.exit(0));
 
         barHolder.getChildren().add(exitButton);
@@ -122,6 +124,10 @@ public class GridRenderController {
         posMap.put(POS_DOWNRIGHT,position4);
         makeQualityLevels();
         qualityLvl = QUALITY_LEVEL_128;
+        btn128.setSelected(true);
+        Tooltip t = new Tooltip();
+        t.setText("sajt");
+        btn128.setTooltip(t);
         PictureRenderer.qualityLvlManager();
 
     }
@@ -163,16 +169,16 @@ public class GridRenderController {
         barHolder = new VBox();
 
         qualityBar = new VBox();
-        btn1024 = new ToggleButton("1024X1024");
-        btn512 = new ToggleButton("512X512");
-        btn256 = new ToggleButton("256X256");
-        btn128 = new ToggleButton("128X128");
-        btnRawImage = new ToggleButton("Raw Image");
+        btn1024 = new ToggleButton(settings.get("GRID_RENDER","BUTTON_1024_TEXT"));
+        btn512 = new ToggleButton(settings.get("GRID_RENDER","BUTTON_512_TEXT"));
+        btn256 = new ToggleButton(settings.get("GRID_RENDER","BUTTON_256_TEXT"));
+        btn128 = new ToggleButton(settings.get("GRID_RENDER","BUTTON_128_TEXT"));
+        btnRawImage = new ToggleButton(settings.get("GRID_RENDER","BUTTON_RAW_IMAGE_TEXT"));
         btnMap = new HashMap<>();
         posMap = new HashMap<>();
 
         changeButtonHolder = new VBox();
-        fullPictViewBtn = new Button("Full picture view");
+        fullPictViewBtn = new Button(settings.get("GRID_RENDER","FULL_PICTURE_BUTTON_TEXT"));
 
         position1 = new ArrayList<>();
         position2 = new ArrayList<>();

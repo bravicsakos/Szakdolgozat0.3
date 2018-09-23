@@ -265,7 +265,7 @@ public class PictureRenderer {
             grid.getChildren().add(newImgView);
             return newImage;
         } catch (MalformedURLException ex) {
-            System.err.println("MalformedURL exception at rendering image:" + newImageFile.getName());
+            ex.printStackTrace();
         }
         return null;
     }

@@ -6,7 +6,10 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -15,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 
+import java.awt.*;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.sql.Time;
@@ -23,15 +27,22 @@ import java.util.HashMap;
 import java.util.Objects;
 
 import static MainPackage.ChooserScreenController.screenController;
+import static MainPackage.Main.settings;
 
 public class ThumbnailCreationController {
 
     @FXML
-    StackPane stackPane;
+    BorderPane borderPane;
     @FXML
     VBox vBox;
     @FXML
     Text text;
+    @FXML
+    Button doneButton;
+    @FXML
+    Button exitButton;
+    @FXML
+    HBox hBox;
 
     private static TextFlow progressTab = new TextFlow();
     private static Text progressText = new Text();
@@ -44,8 +55,8 @@ public class ThumbnailCreationController {
     private static Timeline waitAnimation = new Timeline();
     private static Timeline stopperAnimation = new Timeline();
 
-    private static File imageFolder = new File("Images_Whole Slide.jpg_Files");
-    static File mrxsFile = new File("Images_Whole Slide.jpg");
+    private static File imageFolder = new File(settings.get("ROBOT_FUNCTIONS","RAW_IMAGE_FOLDER_FULL_NAME") + "\\");
+    static File mrxsFile = new File(settings.get("THUMBNAIL_CREATION","MRXS_FILE_NAME"));
     static int imageListSize = 0;
 
     static HashMap<Integer, File> imageFiles = new HashMap<>();
@@ -54,15 +65,21 @@ public class ThumbnailCreationController {
     static HashMap<Integer, File> thumbnailFiles256X256 = new HashMap<>();
     static HashMap<Integer, File> thumbnailFiles128X128 = new HashMap<>();
 
-    private final static double imageHeight = 2048;
+    private final static double imageHeight = Integer.parseInt(settings.get("THUMBNAIL_CREATION","IMAGE_HEIGHT"));
+
+    private static int counter = 0;
 
     public void initialize(){
+        exitButton.setText(settings.get("GENERAL","EXIT_BUTTON_TEXT"));
+        exitButton.setOnAction(event -> System.exit(0));
+        text.setText(settings.get("THUMBNAIL_CREATION","CREATION_COMPLETE_TEXT"));
+        doneButton.setText(settings.get("THUMBNAIL_CREATION","PUSHME_BUTTON_TEXT"));
         vBox.setSpacing(20);
         vBox.setVisible(false);
         vBox.setDisable(true);
 
         makeProgressTab();
-        stackPane.getChildren().add(progressTab);
+        hBox.getChildren().add(progressTab);
         progressTab.toBack();
 
         fontMaker(text);
@@ -98,21 +115,24 @@ public class ThumbnailCreationController {
         stopperText.setFill(Color.BLACK);
         progressText.setFill(Color.BLACK);
         pleaseWaitText.setFill(Color.BLACK);
-        pleaseWaitText.setText("Image rescaling in progress, please wait.");
+        pleaseWaitText.setText(settings.get("THUMBNAIL_CREATION","PLEASE_WAIT_TEXT_BASE") + ".");
         progressTab.getChildren().add(pleaseWaitText);
         progressTab.getChildren().add(progressText);
         progressTab.getChildren().add(stopperText);
 
         EventHandler<ActionEvent> update = event -> {
-            switch (pleaseWaitText.getText()) {
-                case "Image rescaling in progress, please wait.":
-                    pleaseWaitText.setText("Image rescaling in progress, please wait..");
+            switch (counter) {
+                case 0:
+                    pleaseWaitText.setText(settings.get("THUMBNAIL_CREATION","PLEASE_WAIT_TEXT_BASE") + "..");
+                    counter = 1;
                     break;
-                case "Image rescaling in progress, please wait..":
-                    pleaseWaitText.setText("Image rescaling in progress, please wait...");
+                case 1:
+                    pleaseWaitText.setText(settings.get("THUMBNAIL_CREATION","PLEASE_WAIT_TEXT_BASE") + "...");
+                    counter = 2;
                     break;
-                case "Image rescaling in progress, please wait...":
-                    pleaseWaitText.setText("Image rescaling in progress, please wait.");
+                case 2:
+                    pleaseWaitText.setText(settings.get("THUMBNAIL_CREATION","PLEASE_WAIT_TEXT_BASE") + ".");
+                    counter = 0;
                     break;
             }
         };
@@ -134,12 +154,12 @@ public class ThumbnailCreationController {
     }
 
     private static void fontMaker(Text text){
-        Font newFont = new Font("Arial", 20);
+        Font newFont = new Font(settings.get("THUMBNAIL_CREATION","FONT_MAKER_FONT_1"), Integer.parseInt(settings.get("THUMBNAIL_CREATION","FONT_MAKER_SIZE_1")));
         text.setFont(newFont);
     }
 
     private static void fontMakerAll(Text... texts){
-        Font newFont = new Font("Serif", 30);
+        Font newFont = new Font(settings.get("THUMBNAIL_CREATION","FONT_MAKER_FONT_2"), Integer.parseInt(settings.get("THUMBNAIL_CREATION","FONT_MAKER_SIZE_2")));
         for (Text text: texts) {
             text.setFont(newFont);
         }
@@ -147,10 +167,14 @@ public class ThumbnailCreationController {
 
     private static int thumbnailCounter(){
         int imageID = 0;
-        File thumb = new File("Thumbnails_1024X1024\\Thumbnail_" + imageID + ".jpg");
+        File thumb = new File(settings.get("THUMBNAIL_CREATION","THUMBNAIL_FOLDER_1024X1024_NAME") + "\\" +
+                settings.get("THUMBNAIL_CREATION","THUMBNAIL_NAME")+ imageID +
+                settings.get("THUMBNAIL_CREATION","THUMBNAIL_FORMAT"));
         while (thumb.exists()){
             imageID++;
-            thumb = new File("Thumbnails_1024X1024\\Thumbnail_" + imageID + ".jpg");
+            thumb = new File(settings.get("THUMBNAIL_CREATION","THUMBNAIL_FOLDER_1024X1024_NAME") + "\\" +
+                    settings.get("THUMBNAIL_CREATION","THUMBNAIL_NAME")+ imageID +
+                    settings.get("THUMBNAIL_CREATION","THUMBNAIL_FORMAT"));
         }
         return --imageID>0?imageID:0;
     }
@@ -185,10 +209,10 @@ public class ThumbnailCreationController {
 
     private static void createThumbnails(int fromID) {
         File pict = imageFiles.get(fromID);
-        File thumbFolder_1024X1024 = new File("Thumbnails_1024X1024");
-        File thumbFolder_512X512 = new File("Thumbnails_512X512");
-        File thumbFolder_256X256 = new File("Thumbnails_256X256");
-        File thumbFolder_128X128 = new File("Thumbnails_128X128");
+        File thumbFolder_1024X1024 = new File(settings.get("THUMBNAIL_CREATION","THUMBNAIL_FOLDER_1024X1024_NAME"));
+        File thumbFolder_512X512 = new File(settings.get("THUMBNAIL_CREATION","THUMBNAIL_FOLDER_512X512_NAME"));
+        File thumbFolder_256X256 = new File(settings.get("THUMBNAIL_CREATION","THUMBNAIL_FOLDER_256X256_NAME"));
+        File thumbFolder_128X128 = new File(settings.get("THUMBNAIL_CREATION","THUMBNAIL_FOLDER_128X128_NAME"));
         if (    (thumbFolder_1024X1024.mkdir() &&
                 thumbFolder_512X512.mkdir() &&
                 thumbFolder_256X256.mkdir() &&
@@ -201,7 +225,8 @@ public class ThumbnailCreationController {
                 progressText.setText("\nImage " + (fromID + 1) + "/" + imageListSize + " is rescaled!");
                 try {
                     Image img = new Image(pict.toURI().toURL().toString());
-                    ThumbnailCreater.makeThumbnail(img, (int) imageHeight, "Thumbnail_" + fromID + ".jpg");
+                    ThumbnailCreater.makeThumbnail(img, (int) imageHeight, settings.get("THUMBNAIL_CREATION","THUMBNAIL_NAME") + fromID +
+                            settings.get("THUMBNAIL_CREATION","THUMBNAIL_FORMAT"));
                 } catch (MalformedURLException ex) {
                     System.err.println("Malformed URL at creating thumbnail! PictureRenderer/ThumbnailCreater");
                 }

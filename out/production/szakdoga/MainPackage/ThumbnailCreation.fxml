@@ -5,15 +5,32 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
-<StackPane xmlns="http://javafx.com/javafx"
-           xmlns:fx="http://javafx.com/fxml"
-           fx:controller="MainPackage.ThumbnailCreationController"
-           fx:id="stackPane">
-    <VBox alignment="CENTER" fx:id="vBox">
-        <TextFlow textAlignment="CENTER">
-            <Text text="Thumbnails have been created!" fx:id="text"/>
-        </TextFlow>
-        <Button text="Push me!" onAction="#handleButton"/>
-    </VBox>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.BorderPane?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="MainPackage.ThumbnailCreationController"
+            fx:id="borderPane">
+    <center>
+        <VBox alignment="CENTER" fx:id="vBox">
+            <TextFlow textAlignment="CENTER">
+                <Text fx:id="text"/>
+            </TextFlow>
+            <Button text="Push me!" onAction="#handleButton" fx:id="doneButton"/>
+        </VBox>
+    </center>
+    <top>
+        <BorderPane>
+            <left>
+                <HBox fx:id="hBox"/>
+            </left>
+            <right>
+                <HBox alignment="TOP_RIGHT" >
+                    <Button alignment="TOP_RIGHT" fx:id="exitButton"/>
+                </HBox>
+            </right>
+        </BorderPane>
 
-</StackPane>
+    </top>
+
+</BorderPane>

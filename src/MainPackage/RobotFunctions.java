@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static MainPackage.Main.settings;
 import static java.awt.event.KeyEvent.*;
 
 public class RobotFunctions {
@@ -73,7 +74,7 @@ public class RobotFunctions {
         keyPush(VK_TAB);
         keyPush(VK_ENTER);
         keyPush(VK_TAB);
-        String myString = System.getProperty("user.dir") + "\\Images";
+        String myString = System.getProperty("user.dir") + "\\" + settings.get("ROBOT_FUNCTIONS","RAW_IMAGE_FOLDER_BASE_NAME");
         StringSelection stringSelection = new StringSelection(myString);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
@@ -109,7 +110,7 @@ public class RobotFunctions {
     public static boolean runFileScan(){
         metaSearch();
         int counter  = 0;
-        File file = new File(System.getProperty("user.dir") + "\\Images_Whole Slide.jpg_Files\\");
+        File file = new File(System.getProperty("user.dir") + "\\" + settings.get("ROBOT_FUNCTIONS","RAW_IMAGE_FOLDER_FULL_NAME") + "\\");
         for (File ignored : Objects.requireNonNull(file.listFiles())) {
             counter++;
         }
@@ -121,7 +122,7 @@ public class RobotFunctions {
     }
 
     private static void metaSearch(){
-        File file = new File(System.getProperty("user.dir") + "\\Images_Whole Slide.jpg_Files\\_meta.xml");
+        File file = new File(System.getProperty("user.dir") + "\\" + settings.get("ROBOT_FUNCTIONS","RAW_IMAGE_FOLDER_FULL_NAME") + "\\_meta.xml");
         if (!file.exists()){
             return;
         }
