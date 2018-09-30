@@ -27,7 +27,9 @@ import java.util.HashMap;
 import java.util.Objects;
 
 import static MainPackage.ChooserScreenController.screenController;
-import static MainPackage.Main.settings;
+import static MainPackage.Main.sectionGeneral;
+import static MainPackage.IniTools.*;
+import static MainPackage.PictureChooserController.projectFolder;
 
 public class ThumbnailCreationController {
 
@@ -44,6 +46,8 @@ public class ThumbnailCreationController {
     @FXML
     HBox hBox;
 
+    static IniTools sectionThumbnail = new IniTools("THUMBNAIL_CREATION");
+
     private static TextFlow progressTab = new TextFlow();
     private static Text progressText = new Text();
     private static Text pleaseWaitText = new Text();
@@ -55,8 +59,8 @@ public class ThumbnailCreationController {
     private static Timeline waitAnimation = new Timeline();
     private static Timeline stopperAnimation = new Timeline();
 
-    private static File imageFolder = new File(settings.get("ROBOT_FUNCTIONS","RAW_IMAGE_FOLDER_FULL_NAME") + "\\");
-    static File mrxsFile = new File(settings.get("THUMBNAIL_CREATION","MRXS_FILE_NAME"));
+    private static File imageFolder = new File(projectFolder + "\\" + settings.get("ROBOT_FUNCTIONS","RAW_IMAGE_FOLDER_FULL_NAME") + "\\");
+    static File mrxsFile = new File(projectFolder +"\\" + sectionThumbnail.getValue("MRXS_FILE_NAME"));
     static int imageListSize = 0;
 
     static HashMap<Integer, File> imageFiles = new HashMap<>();
@@ -65,15 +69,15 @@ public class ThumbnailCreationController {
     static HashMap<Integer, File> thumbnailFiles256X256 = new HashMap<>();
     static HashMap<Integer, File> thumbnailFiles128X128 = new HashMap<>();
 
-    private final static double imageHeight = Integer.parseInt(settings.get("THUMBNAIL_CREATION","IMAGE_HEIGHT"));
+    private final static double imageHeight = Integer.parseInt(sectionThumbnail.getValue("IMAGE_HEIGHT"));
 
     private static int counter = 0;
 
     public void initialize(){
-        exitButton.setText(settings.get("GENERAL","EXIT_BUTTON_TEXT"));
+        exitButton.setText(sectionGeneral.getValue("EXIT_BUTTON_TEXT"));
         exitButton.setOnAction(event -> System.exit(0));
-        text.setText(settings.get("THUMBNAIL_CREATION","CREATION_COMPLETE_TEXT"));
-        doneButton.setText(settings.get("THUMBNAIL_CREATION","PUSHME_BUTTON_TEXT"));
+        text.setText(sectionThumbnail.getValue("CREATION_COMPLETE_TEXT"));
+        doneButton.setText(sectionThumbnail.getValue("PUSHME_BUTTON_TEXT"));
         vBox.setSpacing(20);
         vBox.setVisible(false);
         vBox.setDisable(true);
@@ -115,7 +119,7 @@ public class ThumbnailCreationController {
         stopperText.setFill(Color.BLACK);
         progressText.setFill(Color.BLACK);
         pleaseWaitText.setFill(Color.BLACK);
-        pleaseWaitText.setText(settings.get("THUMBNAIL_CREATION","PLEASE_WAIT_TEXT_BASE") + ".");
+        pleaseWaitText.setText(sectionThumbnail.getValue("PLEASE_WAIT_TEXT_BASE") + ".");
         progressTab.getChildren().add(pleaseWaitText);
         progressTab.getChildren().add(progressText);
         progressTab.getChildren().add(stopperText);
@@ -123,15 +127,15 @@ public class ThumbnailCreationController {
         EventHandler<ActionEvent> update = event -> {
             switch (counter) {
                 case 0:
-                    pleaseWaitText.setText(settings.get("THUMBNAIL_CREATION","PLEASE_WAIT_TEXT_BASE") + "..");
+                    pleaseWaitText.setText(sectionThumbnail.getValue("PLEASE_WAIT_TEXT_BASE") + "..");
                     counter = 1;
                     break;
                 case 1:
-                    pleaseWaitText.setText(settings.get("THUMBNAIL_CREATION","PLEASE_WAIT_TEXT_BASE") + "...");
+                    pleaseWaitText.setText(sectionThumbnail.getValue("PLEASE_WAIT_TEXT_BASE") + "...");
                     counter = 2;
                     break;
                 case 2:
-                    pleaseWaitText.setText(settings.get("THUMBNAIL_CREATION","PLEASE_WAIT_TEXT_BASE") + ".");
+                    pleaseWaitText.setText(sectionThumbnail.getValue("PLEASE_WAIT_TEXT_BASE") + ".");
                     counter = 0;
                     break;
             }
@@ -154,12 +158,12 @@ public class ThumbnailCreationController {
     }
 
     private static void fontMaker(Text text){
-        Font newFont = new Font(settings.get("THUMBNAIL_CREATION","FONT_MAKER_FONT_1"), Integer.parseInt(settings.get("THUMBNAIL_CREATION","FONT_MAKER_SIZE_1")));
+        Font newFont = new Font(sectionThumbnail.getValue("FONT_MAKER_FONT_1"), Integer.parseInt(sectionThumbnail.getValue("FONT_MAKER_SIZE_1")));
         text.setFont(newFont);
     }
 
     private static void fontMakerAll(Text... texts){
-        Font newFont = new Font(settings.get("THUMBNAIL_CREATION","FONT_MAKER_FONT_2"), Integer.parseInt(settings.get("THUMBNAIL_CREATION","FONT_MAKER_SIZE_2")));
+        Font newFont = new Font(sectionThumbnail.getValue("FONT_MAKER_FONT_2"), Integer.parseInt(sectionThumbnail.getValue("FONT_MAKER_SIZE_2")));
         for (Text text: texts) {
             text.setFont(newFont);
         }
@@ -167,14 +171,14 @@ public class ThumbnailCreationController {
 
     private static int thumbnailCounter(){
         int imageID = 0;
-        File thumb = new File(settings.get("THUMBNAIL_CREATION","THUMBNAIL_FOLDER_1024X1024_NAME") + "\\" +
-                settings.get("THUMBNAIL_CREATION","THUMBNAIL_NAME")+ imageID +
-                settings.get("THUMBNAIL_CREATION","THUMBNAIL_FORMAT"));
+        File thumb = new File(projectFolder + "\\" + sectionThumbnail.getValue("THUMBNAIL_FOLDER_1024X1024_NAME") + "\\" +
+                sectionThumbnail.getValue("THUMBNAIL_NAME")+ imageID +
+                sectionThumbnail.getValue("THUMBNAIL_FORMAT"));
         while (thumb.exists()){
             imageID++;
-            thumb = new File(settings.get("THUMBNAIL_CREATION","THUMBNAIL_FOLDER_1024X1024_NAME") + "\\" +
-                    settings.get("THUMBNAIL_CREATION","THUMBNAIL_NAME")+ imageID +
-                    settings.get("THUMBNAIL_CREATION","THUMBNAIL_FORMAT"));
+            thumb = new File(projectFolder + "\\" + sectionThumbnail.getValue("THUMBNAIL_FOLDER_1024X1024_NAME") + "\\" +
+                    sectionThumbnail.getValue("THUMBNAIL_NAME")+ imageID +
+                    sectionThumbnail.getValue("THUMBNAIL_FORMAT"));
         }
         return --imageID>0?imageID:0;
     }
@@ -209,10 +213,10 @@ public class ThumbnailCreationController {
 
     private static void createThumbnails(int fromID) {
         File pict = imageFiles.get(fromID);
-        File thumbFolder_1024X1024 = new File(settings.get("THUMBNAIL_CREATION","THUMBNAIL_FOLDER_1024X1024_NAME"));
-        File thumbFolder_512X512 = new File(settings.get("THUMBNAIL_CREATION","THUMBNAIL_FOLDER_512X512_NAME"));
-        File thumbFolder_256X256 = new File(settings.get("THUMBNAIL_CREATION","THUMBNAIL_FOLDER_256X256_NAME"));
-        File thumbFolder_128X128 = new File(settings.get("THUMBNAIL_CREATION","THUMBNAIL_FOLDER_128X128_NAME"));
+        File thumbFolder_1024X1024 = new File(projectFolder + "\\" + sectionThumbnail.getValue("THUMBNAIL_FOLDER_1024X1024_NAME"));
+        File thumbFolder_512X512 = new File(projectFolder + "\\" + sectionThumbnail.getValue("THUMBNAIL_FOLDER_512X512_NAME"));
+        File thumbFolder_256X256 = new File(projectFolder + "\\" + sectionThumbnail.getValue("THUMBNAIL_FOLDER_256X256_NAME"));
+        File thumbFolder_128X128 = new File(projectFolder + "\\" + sectionThumbnail.getValue("THUMBNAIL_FOLDER_128X128_NAME"));
         if (    (thumbFolder_1024X1024.mkdir() &&
                 thumbFolder_512X512.mkdir() &&
                 thumbFolder_256X256.mkdir() &&
@@ -225,8 +229,8 @@ public class ThumbnailCreationController {
                 progressText.setText("\nImage " + (fromID + 1) + "/" + imageListSize + " is rescaled!");
                 try {
                     Image img = new Image(pict.toURI().toURL().toString());
-                    ThumbnailCreater.makeThumbnail(img, (int) imageHeight, settings.get("THUMBNAIL_CREATION","THUMBNAIL_NAME") + fromID +
-                            settings.get("THUMBNAIL_CREATION","THUMBNAIL_FORMAT"));
+                    ThumbnailCreater.makeThumbnail(img, (int) imageHeight, sectionThumbnail.getValue("THUMBNAIL_NAME") + fromID +
+                            sectionThumbnail.getValue("THUMBNAIL_FORMAT"));
                 } catch (MalformedURLException ex) {
                     System.err.println("Malformed URL at creating thumbnail! PictureRenderer/ThumbnailCreater");
                 }

@@ -9,16 +9,19 @@ import org.ini4j.Ini;
 
 import java.io.File;
 
+import static MainPackage.IniTools.*;
+
 public class Main extends Application {
 
-    static Ini settings = null;
+    static IniTools sectionGeneral;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        settings = new Ini(new File("Settings.ini"));
+        initializeINIFile(new File("Settings.ini"));
+        sectionGeneral = new IniTools("GENERAL");
         Parent root = FXMLLoader.load(getClass().getResource("ChooserScreen.fxml"));
         Scene scene = new Scene(root, 1000, 820);
-        primaryStage.setTitle(settings.get("GENERAL","APP_NAME") + " ver. " + settings.get("GENERAL","APP_VERSION"));
+        primaryStage.setTitle(sectionGeneral.getValue("APP_NAME")+ " ver. " + sectionGeneral.getValue("APP_VERSION"));
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setMaximized(true);

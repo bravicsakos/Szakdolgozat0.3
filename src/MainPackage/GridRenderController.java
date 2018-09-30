@@ -13,15 +13,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
-import java.awt.*;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import static MainPackage.ChooserScreenController.screenController;
-import static MainPackage.Main.settings;
+import static MainPackage.IniTools.*;
 import static MainPackage.PictureRenderer.*;
 import static MainPackage.ThumbnailCreationController.*;
 import static MainPackage.Tracer.*;
@@ -56,6 +58,9 @@ public class GridRenderController {
     static int coordX = 0;
     static int coordY = 0;
 
+    private Rectangle rect;
+    private double rectSize;
+
     public void initialize(){
 
         for (int i = mainPane.getChildren().size()-1; i >= 0; i--) {
@@ -84,27 +89,35 @@ public class GridRenderController {
 
         makeBtnHashmap();
 
-        File temp = mrxsFile;
-        ImageView mrxsView = new ImageView();
-        try{
-            Image mrxsImage = new Image(temp.toURI().toURL().toString());
-            mrxsView.setImage(mrxsImage);
-            mrxsView.setRotate(270);
-        }
-        catch (MalformedURLException ex){
-            System.err.println("Malformed URL at addMrxs");
-        }
-        mrxsView.setFitWidth(350);
-        mrxsView.setTranslateX((screenWidth - ((mrxsView.getFitWidth()*mrxsView.getImage().getHeight())/mrxsView.getImage().getWidth()))/2);
-        mrxsView.setTranslateY((screenHeigth - mrxsView.getFitWidth())/2);
-        mrxsView.setPreserveRatio(true);
 
-        mainPane.getChildren().add(mrxsView);
+        mainPane.getChildren().add(addSmallView());
 
         EventHandler btnEvent = event -> {
             qualityLvl = btnMap.get((ToggleButton) event.getTarget());
             coordX = position1.get(0).getCoordX();
             coordY = position1.get(0).getCoordY();
+            switch (qualityLvl){
+                case QUALITY_LEVEL_RAWIMAGE :
+                    rect.setHeight(rectSize);
+                    rect.setWidth(rectSize);
+                    break;
+                case QUALITY_LEVEL_1024 :
+                    rect.setHeight(rectSize*2);
+                    rect.setWidth(rectSize*2);
+                    break;
+                    case QUALITY_LEVEL_512 :
+                    rect.setHeight(rectSize*4);
+                    rect.setWidth(rectSize*4);
+                    break;
+                case QUALITY_LEVEL_256 :
+                    rect.setHeight(rectSize*8);
+                    rect.setWidth(rectSize*8);
+                    break;
+                case QUALITY_LEVEL_128 :
+                    rect.setHeight(rectSize*16);
+                    rect.setWidth(rectSize*16);
+                    break;
+            }
             qualityLvlManager();
             for (Object tb: qualityBar.getChildren()) {
                 ((ToggleButton) tb).setSelected(false);
@@ -125,9 +138,6 @@ public class GridRenderController {
         makeQualityLevels();
         qualityLvl = QUALITY_LEVEL_128;
         btn128.setSelected(true);
-        Tooltip t = new Tooltip();
-        t.setText("sajt");
-        btn128.setTooltip(t);
         PictureRenderer.qualityLvlManager();
 
     }
@@ -186,5 +196,33 @@ public class GridRenderController {
         position4 = new ArrayList<>();
     }
 
+    private StackPane addSmallView(){
+        StackPane smallView = new StackPane();
+        File temp = mrxsFile;
+        ImageView mrxsView = new ImageView();
+        try{
+            Image mrxsImage = new Image(temp.toURI().toURL().toString());
+            mrxsView.setImage(mrxsImage);
+            mrxsView.setRotate(270);
+        }
+        catch (MalformedURLException ex){
+            System.err.println("Malformed URL at addMrxs");
+        }
+        mrxsView.setFitWidth(350);
+        mrxsView.setFitHeight((mrxsView.getFitWidth()*mrxsView.getImage().getHeight())/mrxsView.getImage().getWidth());
+        smallView.setTranslateX((screenWidth - mrxsView.getFitHeight())/2);
+        smallView.setTranslateY((screenHeigth - mrxsView.getFitWidth())/2);
+        mrxsView.setPreserveRatio(true);
+        rectSize = mrxsView.getFitWidth()/100;
+        rect = new Rectangle(mrxsView.getTranslateX()-(mrxsView.getFitWidth()/2),mrxsView.getTranslateY()-(mrxsView.getFitHeight()/2),rectSize*16,rectSize*16);
+        rect.setTranslateX(-390);
+        rect.setTranslateY(-145);
+        rect.setFill(Color.TRANSPARENT);
+        rect.setStroke(Color.RED);
+        smallView.getChildren().add(mrxsView);
+        smallView.getChildren().add(rect);
+        return smallView;
+
+    }
 
 }

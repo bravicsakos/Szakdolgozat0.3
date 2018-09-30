@@ -4,15 +4,46 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.text.TextFlow?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="MainPackage.PictureChooserController">
     <center>
-        <Button alignment="CENTER" fx:id="pushMeButton" onAction="#handlePushMeButton"/>
+        <HBox alignment="CENTER">
+            <StackPane>
+                <Button fx:id="newProjectButton"/>
+                <VBox alignment="CENTER" fx:id="newBox" visible="false" disable="true">
+                    <Button  fx:id="pushMeButton" onAction="#handlePushMeButton"/>
+                    <Label fx:id="label"/>
+                    <TextField fx:id="textField" />
+                    <Button fx:id="saveButton" />
+                </VBox>
+            </StackPane>
+            <StackPane>
+                <Button fx:id="loadProjectButton" />
+                <VBox alignment="CENTER" fx:id="loadBox" visible="false" disable="true">
+                    <TitledPane fx:id="loadPane" >
+                        <VBox fx:id="loadPaneBox">
+
+                        </VBox>
+                    </TitledPane>
+
+                </VBox>
+            </StackPane>
+
+        </HBox>
+
     </center>
     <top>
         <HBox alignment="TOP_RIGHT" >
             <Button alignment="TOP_RIGHT" fx:id="exitButton" />
         </HBox>
     </top>
+
+
 </BorderPane>

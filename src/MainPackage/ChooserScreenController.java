@@ -6,10 +6,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 import static MainPackage.Constants.TYPE_MULTIPLE;
 import static MainPackage.Constants.TYPE_SINGLE;
-import static MainPackage.Main.settings;
+import static MainPackage.IniTools.*;
 
 public class ChooserScreenController {
     @FXML

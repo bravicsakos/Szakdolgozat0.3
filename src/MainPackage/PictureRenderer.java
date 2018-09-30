@@ -128,19 +128,18 @@ public class PictureRenderer {
                 coordYB = add2.get(0).getCoordY() + offset;
                 break;
         }
-        if (isRenderable(coordXA, coordYA) && isRenderable(coordXB, coordYB)) {
-            removeRenderedImage(remove1);
-            removeRenderedImage(remove2);
-            remove1.clear();
-            remove2.clear();
-            remove1.addAll(add1);
-            remove2.addAll(add2);
-            add1.clear();
-            add2.clear();
-            add1.addAll(makeImage(size, coordXA, coordYA));
-            add2.addAll(makeImage(size, coordXB, coordYB));
-            setGridPosition(type);
-        }
+        removeRenderedImage(remove1);
+        removeRenderedImage(remove2);
+        remove1.clear();
+        remove2.clear();
+        remove1.addAll(add1);
+        remove2.addAll(add2);
+        add1.clear();
+        add2.clear();
+        add1.addAll(makeImage(size, coordXA, coordYA));
+        add2.addAll(makeImage(size, coordXB, coordYB));
+        setGridPosition(type);
+
     }
 
     private static void renderFirstImage(int minX, int minY, int type){
@@ -183,22 +182,33 @@ public class PictureRenderer {
         ArrayList<ImageV2> newList = new ArrayList<>();
         switch (size) {
             case SIZE_1 :
-                newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX, minY, 1, TYPE_1X1))));
+                if (isRenderable(minX,minY)) {
+                    newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX, minY, 1, TYPE_1X1))));
+                }
                 break;
             case SIZE_4 :
-                newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX, minY, 2,TYPE_2X2))));
-                newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX + 1, minY, 2,TYPE_2X2))));
-                newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX, minY + 1, 2,TYPE_2X2))));
-                newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX + 1, minY + 1, 2,TYPE_2X2))));
+                if (isRenderable(minX,minY)) {
+                    newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX, minY, 2, TYPE_2X2))));
+                }
+                if (isRenderable(minX + 1,minY)) {
+                    newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX + 1, minY, 2, TYPE_2X2))));
+                }
+                if (isRenderable(minX,minY + 1)) {
+                    newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX, minY + 1, 2, TYPE_2X2))));
+                }
+                if (isRenderable(minX + 1,minY + 1)) {
+                    newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX + 1, minY + 1, 2, TYPE_2X2))));
+                }
                 break;
             case SIZE_16 :
                 for (int j = 0; j < 4; j++) {
                     for (int i = 0; i < 4; i++) {
-                        if (j == 0 && i == 0){
-                            newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX + i, minY + j, 4, TYPE_4X4))));
-                        }
-                        else {
-                            newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX + i, minY + j, 4, TYPE_4X4))));
+                        if (isRenderable(minX + i,minY + j)) {
+                            if (j == 0 && i == 0) {
+                                newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX + i, minY + j, 4, TYPE_4X4))));
+                            } else {
+                                newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX + i, minY + j, 4, TYPE_4X4))));
+                            }
                         }
                     }
                 }
@@ -206,11 +216,12 @@ public class PictureRenderer {
             case SIZE_64 :
                 for (int j = 0; j < 8; j++) {
                     for (int i = 0; i < 8; i++) {
-                        if (j == 0 && i == 0){
-                            newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX + i, minY + j, 8, TYPE_8X8))));
-                        }
-                        else {
-                            newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX + i, minY + j, 8, TYPE_8X8))));
+                        if (isRenderable(minX+ i,minY +j)) {
+                            if (j == 0 && i == 0) {
+                                newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX + i, minY + j, 8, TYPE_8X8))));
+                            } else {
+                                newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX + i, minY + j, 8, TYPE_8X8))));
+                            }
                         }
                     }
                 }
@@ -218,11 +229,12 @@ public class PictureRenderer {
             case SIZE_256 :
                 for (int j = 0; j < 16; j++) {
                     for (int i = 0; i < 16; i++) {
-                        if (j == 0 && i == 0){
-                            newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX + i, minY + j, 16, TYPE_16X16))));
-                        }
-                        else {
-                            newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX + i, minY + j, 16, TYPE_16X16))));
+                        if (isRenderable(minX + i,minY + j)) {
+                            if (j == 0 && i == 0) {
+                                newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX + i, minY + j, 16, TYPE_16X16))));
+                            } else {
+                                newList.add(new ImageV2(Objects.requireNonNull(renderImage(minX + i, minY + j, 16, TYPE_16X16))));
+                            }
                         }
                     }
                 }
@@ -380,7 +392,7 @@ public class PictureRenderer {
         return -1;
     }
 
-    private static void imageRemover(Vector<Integer> ids){
+    static void imageRemover(Vector<Integer> ids){
         for (int i = 0; i < grid.getChildren().size(); i++) {
             if (grid.getChildren().get(i) instanceof ImageView) {
                 for (Integer j: ids) {

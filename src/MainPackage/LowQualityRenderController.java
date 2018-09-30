@@ -10,7 +10,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 
 import static MainPackage.ChooserScreenController.screenController;
-import static MainPackage.Main.settings;
+import static MainPackage.IniTools.*;
 import static MainPackage.ThumbnailCreationController.mrxsFile;
 
 public class LowQualityRenderController {

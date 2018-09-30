@@ -12,7 +12,9 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static MainPackage.Main.settings;
+import static MainPackage.IniTools.*;
+import static MainPackage.PictureChooserController.projectFolder;
+import static MainPackage.PictureChooserController.projects;
 import static java.awt.event.KeyEvent.*;
 
 public class RobotFunctions {
@@ -74,7 +76,7 @@ public class RobotFunctions {
         keyPush(VK_TAB);
         keyPush(VK_ENTER);
         keyPush(VK_TAB);
-        String myString = System.getProperty("user.dir") + "\\" + settings.get("ROBOT_FUNCTIONS","RAW_IMAGE_FOLDER_BASE_NAME");
+        String myString = projectFolder + "\\" +  settings.get("ROBOT_FUNCTIONS","RAW_IMAGE_FOLDER_BASE_NAME");
         StringSelection stringSelection = new StringSelection(myString);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
@@ -108,21 +110,26 @@ public class RobotFunctions {
     }
 
     public static boolean runFileScan(){
-        metaSearch();
-        int counter  = 0;
-        File file = new File(System.getProperty("user.dir") + "\\" + settings.get("ROBOT_FUNCTIONS","RAW_IMAGE_FOLDER_FULL_NAME") + "\\");
-        for (File ignored : Objects.requireNonNull(file.listFiles())) {
-            counter++;
+        try {
+            metaSearch();
+            int counter = 0;
+            File file = new File(projectFolder + "\\" + settings.get("ROBOT_FUNCTIONS", "RAW_IMAGE_FOLDER_FULL_NAME") + "\\");
+            for (File ignored : Objects.requireNonNull(file.listFiles())) {
+                counter++;
+            }
+            if (counter == 0) {
+                return false;
+            }
+            counter--;
+            return counter == numberOfPictures;
         }
-        if (counter == 0){
-            return false;
-        }
-        counter--;
-        return counter == numberOfPictures;
+        catch (NullPointerException ignored){}
+        return false;
+
     }
 
     private static void metaSearch(){
-        File file = new File(System.getProperty("user.dir") + "\\" + settings.get("ROBOT_FUNCTIONS","RAW_IMAGE_FOLDER_FULL_NAME") + "\\_meta.xml");
+        File file = new File(projectFolder  + "\\" + settings.get("ROBOT_FUNCTIONS","RAW_IMAGE_FOLDER_FULL_NAME") + "\\_meta.xml");
         if (!file.exists()){
             return;
         }

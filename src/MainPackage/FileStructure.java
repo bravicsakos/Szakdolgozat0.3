@@ -13,8 +13,8 @@ import java.util.Objects;
 public class FileStructure {
 
     private static final String mainFolder = "Snapped Images";
-    private static String folderOneName = "000";
-    private static String folderTwoName = "000";
+    static String folderOneName = "000";
+    static String folderTwoName = "000";
     private static final String snapExtension = ".png";
     private static final String snapLogName = "Log_";
     private static final String snapLogExtension = ".txt";
@@ -23,7 +23,7 @@ public class FileStructure {
     private static final String warningMsg = "Couldn't create file at locaton: ";
 
 
-    private static void analyseSequenceID(String sequenceID){
+    static void analyseSequenceID(String sequenceID){
         folderOneName = sequenceID.substring(0,3);
         folderTwoName = sequenceID.substring(3,6);
     }
@@ -97,7 +97,7 @@ public class FileStructure {
         return new File(pathFormatter(mainFolder,folderOneName,folderTwoName,sequenceID + snapExtension));
     }
 
-    private static String pathFormatter(String... strings){
+    static String pathFormatter(String... strings){
         StringBuilder finalString = new StringBuilder(strings[0]);
         boolean isFirst = true;
         for (String s: strings) {
