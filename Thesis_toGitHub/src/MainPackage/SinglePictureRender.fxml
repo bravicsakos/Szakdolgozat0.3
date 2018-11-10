@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Text?>
+<StackPane xmlns="http://javafx.com/javafx/8.0.121"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="MainPackage.SinglePictureRenderController"
+           onMouseDragged="#handleMouseDrag" onMousePressed="#handleMouseClick"
+           onScroll="#handleScroll" onMouseMoved="#handleMouseMovement"
+ >
+    <ImageView fx:id="mainimgview" />
+    <Canvas fx:id="canvasGo" height="1080" width="1920">
+    </Canvas>
+    <BorderPane fx:id="mainPane">
+        <top>
+            <HBox spacing="10" >
+                    <ColorPicker fx:id="colorPicker" onAction="#handleColorPicker" />
+                    <Button fx:id="exitbtn" alignment="CENTER_RIGHT" onAction="#handleExitbtn" text="Exit" />
+                <padding>
+                    <Insets left="5" right="5" top="5"/>
+                </padding>
+            </HBox>
+        </top>
+        <left>
+            <VBox>
+                <StackPane>
+                    <ImageView fx:id="smallimgview"/>
+                    <Rectangle fx:id="rectangle" width="128" height="72" />
+                </StackPane>
+                <HBox>
+                    <Text fx:id="coordinates" />
+                    <Slider fx:id="zoomslider" max="28" min="1" orientation="VERTICAL" onMouseDragged="#handleSlider" showTickMarks="true" showTickLabels="true"/>
+                    <Button fx:id="drawbutton" text="drawOnOff" onAction="#handleDrawMode"/>
+                </HBox>
+            </VBox>
+        </left>
+    </BorderPane>
+
+
+</StackPane>

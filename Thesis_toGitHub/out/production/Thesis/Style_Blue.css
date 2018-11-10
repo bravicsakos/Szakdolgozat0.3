@@ -1,0 +1,119 @@
+.Custom-Button1 {
+    -fx-background-color: transparent;
+    -fx-padding: 10 10 10 10;
+    -fx-text-fill: white;
+    -fx-font: 14px "Serif";
+}
+
+.Custom-Button1:hover {
+    -fx-text-fill: rgb(66, 134, 244);
+}
+
+.Custom-Button2 {
+    -fx-background-color: rgba(71,71,71,100);
+    -fx-padding: 10 10 10 10;
+    -fx-text-fill: rgb(66, 134, 244);
+    -fx-font: 20px "Serif";
+}
+
+.Custom-Button3 {
+    -fx-background-color: transparent;
+    -fx-padding: 3 10 3 10;
+    -fx-text-fill: white;
+    -fx-font: 14px "Serif";
+    -fx-border-color: rgba(0,0,0,0) rgba(0,0,0,0) rgba(0,0,0,0) white;
+}
+
+.Custom-Button3:hover {
+    -fx-text-fill: rgb(66, 134, 244);
+    -fx-border-color: rgba(0,0,0,0) rgba(0,0,0,0) rgba(0,0,0,0) rgb(66, 134, 244);
+}
+
+.Custom-Button4 {
+    -fx-text-fill: rgb(66, 134, 244);
+    -fx-background-color: transparent;
+    -fx-padding: 10 10 10 10;
+    -fx-font: 20px "Serif";
+}
+
+.Custom-Button4:hover {
+    -fx-background-color: white;
+}
+
+.Custom-Button5 {
+    -fx-background-color: transparent;
+    -fx-padding: 10 10 10 10;
+    -fx-text-fill: rgb(66, 134, 244);
+    -fx-font: 48px "Serif";
+}
+
+.Custom-Button5:hover {
+    -fx-background-color: rgb(200,200,200);
+}
+
+.Custom-BackGround {
+    -fx-background-color: rgba(51,51,51,100);
+}
+
+.Custom-HeadBoard {
+    -fx-border-color: rgba(0,0,0,0) rgba(0,0,0,0) white rgba(0,0,0,0);
+}
+
+.Custom-Menu {
+    -fx-border-color: transparent rgb(66, 134, 244) transparent transparent;
+}
+
+.Custom-Text {
+     -fx-text-fill: white;
+     -fx-font: 14px "Serif";
+}
+
+.Custom-Text2 {
+     -fx-fill: white;
+     -fx-font: 32px "Serif";
+}
+
+.Custom-Text3 {
+     -fx-fill: rgb(66, 134, 244);
+     -fx-font: 16px "Arial Black";
+}
+
+.Custom-BorderOnly {
+    -fx-background-color: rgba(51,51,51,100);
+    -fx-border-color: black black black black;
+}
+
+.Custom-Scroll {
+    -fx-background-color: transparent;
+    -fx-border: none none none none;
+}
+
+.Custom-Scroll .scroll-bar:horizontal, .Custom-Scroll .scroll-bar:vertical{
+    -fx-background-color: transparent;
+ }
+
+
+.Custom-Scroll .increment-arrow, .Custom-Scroll .decrement-arrow, .Custom-Scroll .thumb{
+    -fx-color: rgb(66, 134, 244);
+    -fx-background-color: rgb(66, 134, 244);
+}
+
+.Custom-Error-Text {
+    -fx-fill: red;
+    -fx-text-fill: red;
+}
+
+.Custom-Toggle-Button {
+    -fx-text-fill: rgb(66, 134, 244);
+    -fx-background-color: transparent;
+    -fx-padding: 10 10 10 10;
+    -fx-font: 20px "Serif";
+}
+
+.Custom-Toggle-Button:hover {
+    -fx-background-color: rgb(200,200,200);
+}
+
+.Custom-Toggle-Button:selected {
+    -fx-background-color: rgb(200,200,200);
+}
