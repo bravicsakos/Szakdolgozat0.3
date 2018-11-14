@@ -15,18 +15,18 @@ public class SnappedImage {
 
     private String sequenceID;
     private String name;
-    private String flagPLACEHOLDER; // TODO : add flags to the saved pictures
+    private String flag; // TODO : add flags to the saved pictures
     private double minX,minY;
     private double maxX,maxY;
 
-    SnappedImage(int id, double minX, double minY, double maxX, double maxY) {
+    SnappedImage(int id, double minX, double minY, double maxX, double maxY, String flag) {
         this.sequenceID = convertSequenceID(id);
         this.minX = minX;
         this.minY = minY;
         this.maxX = maxX;
         this.maxY = maxY;
         this.name = "SnappedImage_" + id + ".png";
-        this.flagPLACEHOLDER = "PLACEHOLDER";
+        this.flag = flag;
     }
 
     public String getId() {
@@ -51,6 +51,10 @@ public class SnappedImage {
 
     double getMaxY() {
         return maxY;
+    }
+
+    String getFlag(){
+        return flag;
     }
 
     /**

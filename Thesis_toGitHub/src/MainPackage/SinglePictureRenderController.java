@@ -9,7 +9,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Slider;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
@@ -23,20 +22,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
 import java.awt.*;
-import java.awt.geom.Arc2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.RenderedImage;
-import java.awt.image.WritableRaster;
 import java.io.*;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.Buffer;
 import java.util.ArrayList;
-import java.util.Hashtable;
 
 
 public class SinglePictureRenderController {
@@ -153,33 +142,33 @@ public class SinglePictureRenderController {
             }
             //Snapshot functions--------------------------------------
             else if (buttonpressed == MouseButton.SECONDARY){
-                int snapwidth = (int) Math.round(screenWidth);
-                int snapheight = (int) Math.round(screenHeight);
-                int snapMinX = 0 ;
-                int snapMinY = 0 ;
+                    int snapwidth = (int) Math.round(screenWidth);
+                    int snapheight = (int) Math.round(screenHeight);
+                    int snapMinX = 0 ;
+                    int snapMinY = 0 ;
 
-                getSnapCoords();
-                SnappedImage snappedImage = new SnappedImage(snappedCounter,snapMinXCoord,snapMinYCoord,snapMaxXCoord,snapMaxYCoord);
-                snapList.add(snappedImage);
-                snappedImgSave(snapList);
+                    getSnapCoords();
+                    SnappedImage snappedImage = new SnappedImage(snappedCounter,snapMinXCoord,snapMinYCoord,snapMaxXCoord,snapMaxYCoord,"Positive");
+                    snapList.add(snappedImage);
+                    snappedImgSave(snapList);
 
-                Rectangle2D snapshotBounds = new Rectangle2D(snapMinX,snapMinY,snapwidth,snapheight);
-                SnapshotParameters snapParams = new SnapshotParameters();
-                WritableImage snapImage = new WritableImage(snapwidth,snapheight);
-                File snappedImageFile = FileStructure.makeFile(snappedImage);
-                FileStructure.fileLogger(snappedImage);
-                FileStructure.folderLogger();
+                    Rectangle2D snapshotBounds = new Rectangle2D(snapMinX,snapMinY,snapwidth,snapheight);
+                    SnapshotParameters snapParams = new SnapshotParameters();
+                    WritableImage snapImage;
+                    File snappedImageFile = FileStructure.makeFile(snappedImage);
+                    FileStructure.fileLogger(snappedImage);
+                    FileStructure.folderLogger();
 
-                snapParams.setViewport(snapshotBounds);
-                snapImage = mainimgview.snapshot(snapParams,null);
-                try {
-                    ImageIO.write(SwingFXUtils.fromFXImage(snapImage, null), "png", snappedImageFile);
-                    snappedCounter++;
-                }
-                catch (IOException ex){
-                    System.err.println("IOException at take snapshot");
-                }
-                System.out.println(mainimgview.getTranslateX());
+                    snapParams.setViewport(snapshotBounds);
+                    snapImage = mainimgview.snapshot(snapParams,null);
+                    try {
+                        ImageIO.write(SwingFXUtils.fromFXImage(snapImage, null), "png", snappedImageFile);
+                        snappedCounter++;
+                    }
+                    catch (IOException ex){
+                        System.err.println("IOException at take snapshot");
+                    }
+                    System.out.println(mainimgview.getTranslateX());
                 System.out.println(mainimgview.getTranslateY());
             }
         }
@@ -402,7 +391,7 @@ public class SinglePictureRenderController {
                 double newMinY = Double.parseDouble(splittedLine[3]);
                 double newMaxX = Double.parseDouble(splittedLine[4]);
                 double newMaxY = Double.parseDouble(splittedLine[5]);
-                SnappedImage newImage = new SnappedImage(newId,newMinX,newMinY,newMaxX,newMaxY);
+                SnappedImage newImage = new SnappedImage(newId,newMinX,newMinY,newMaxX,newMaxY,"Positive");
                 snapList.add(newImage);
                 line = br.readLine();
             }

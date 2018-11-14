@@ -105,7 +105,7 @@ public class NewProjectController {
         label.getStyleClass().add("Custom-Text");
 
         textField.setMaxWidth(200);
-        textField.getStyleClass().add("Custom-Button2");
+        textField.getStyleClass().add("Custom-Button6");
 
         saveButton.setText(sectionNewProject.getValue("SAVE_BUTTON_TEXT"));
         saveButton.getStyleClass().add("Custom-Button1");

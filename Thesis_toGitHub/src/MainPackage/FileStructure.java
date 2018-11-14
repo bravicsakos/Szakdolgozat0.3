@@ -15,17 +15,28 @@ import java.util.Objects;
  * Class for making the database with the saved pictures
  *
  * @variable mainFolder : Base folder to save images to.
+ *
+ * @variable secondaryFolder1,
+ *           secondaryFolder2 : Folder names for secondary folders
+ * @variable secondaryFile : File with path for secondary folder
+ *
  * @variable folderOneName, folderTwoName : Base name for inside folders.
+ *
  * @variable snapExtension,
  *           snapLogName,
  *           snapLogExtension,
  *           folderLogName,
  *           folderLogExtension : Names and extensions for the created files
+ *
  * @variable warningMsg : Warning messages for failed file creation
  * */
 class FileStructure {
 
     private static final String mainFolder = "Snapped Images";
+
+    private static final String secondaryFolder1 = "Positive";
+    private static final String secondaryFolder2 = "Negative";
+    private static File secondaryFile;
 
     private static String folderOneName = "000";
     private static String folderTwoName = "000";
@@ -53,66 +64,74 @@ class FileStructure {
      *
      * Pops error message and return if file could't be created.
      * */
-    private static void makeDirectory(){
+    private static File makeDirectory(String flag){
         File mainFile = new File(mainFolder);
         if (!mainFile.exists()){
             if (!(new File(mainFolder).mkdir())){
-                JOptionPane.showMessageDialog(null,warningMsg + mainFile.getPath(),"Error",JOptionPane.ERROR_MESSAGE);
-                return;
+                //JOptionPane.showMessageDialog(null,warningMsg + mainFile.getPath(),"Error",JOptionPane.ERROR_MESSAGE);
+                return null;
             }
         }
-        File folderOne = new File(pathFormatter(mainFolder,folderOneName));
+        secondaryFile = new File(flag.equals("Positive") ? pathFormatter(mainFolder,secondaryFolder1) : pathFormatter(mainFolder, secondaryFolder2));
+        if (!secondaryFile.exists()){
+            secondaryFile.mkdir();
+        }
+        File folderOne = new File(pathFormatter(secondaryFile.getPath(),folderOneName));
         if (folderOne.exists()){
-            File folderTwo = new File(pathFormatter(mainFolder,folderOneName,folderTwoName));
+            File folderTwo = new File(pathFormatter(secondaryFile.getPath(),folderOneName,folderTwoName));
             if (folderTwo.exists()){
-                return;
+                return secondaryFile;
             }
             if (!folderTwo.mkdir()){
-                JOptionPane.showMessageDialog(null,warningMsg + folderTwo.getPath(),"Error",JOptionPane.ERROR_MESSAGE);
-                return;
+                //JOptionPane.showMessageDialog(null,warningMsg + folderTwo.getPath(),"Error",JOptionPane.ERROR_MESSAGE);
+                return secondaryFile;
             }
-            File snapLog = new File(pathFormatter(mainFolder,folderOneName,folderTwoName,snapLogName + folderOneName + folderTwoName + snapLogExtension));
-            try{
-                if (!snapLog.createNewFile()){
-                    JOptionPane.showMessageDialog(null,warningMsg + snapLog.getPath(),"Error",JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                initializeFileLogger(snapLog);
+            File snapLog = new File(pathFormatter(secondaryFile.getPath(),folderOneName,folderTwoName,snapLogName + folderOneName + folderTwoName + snapLogExtension));
+            if (createSnapLog(snapLog)) {
+                return secondaryFile;
             }
-            catch (IOException ex){
-                ex.printStackTrace();
-            }
-            return;
         }
         if (!folderOne.mkdir()){
-            JOptionPane.showMessageDialog(null,warningMsg + folderOne.getPath(),"Error",JOptionPane.ERROR_MESSAGE);
-            return;
+            //JOptionPane.showMessageDialog(null,warningMsg + folderOne.getPath(),"Error",JOptionPane.ERROR_MESSAGE);
+            return secondaryFile;
         }
-        File folderTwo = new File(pathFormatter(mainFolder,folderOneName,folderTwoName));
+        File folderTwo = new File(pathFormatter(secondaryFile.getPath(),folderOneName,folderTwoName));
         if (!folderTwo.mkdir()){
-            JOptionPane.showMessageDialog(null,warningMsg + folderTwo.getPath(),"Error",JOptionPane.ERROR_MESSAGE);
-            return;
+            //JOptionPane.showMessageDialog(null,warningMsg + folderTwo.getPath(),"Error",JOptionPane.ERROR_MESSAGE);
+            return secondaryFile;
         }
-        File snapLog = new File(pathFormatter(mainFolder,folderOneName,folderTwoName,snapLogName + folderOneName + folderTwoName + snapLogExtension));
-        try{
-            if (!snapLog.createNewFile()){
-                JOptionPane.showMessageDialog(null,warningMsg + snapLog.getPath(),"Error",JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            initializeFileLogger(snapLog);
-        }
-        catch (IOException ex){
-            ex.printStackTrace();
-        }
-        File folderLog = new File(pathFormatter(mainFolder,folderOneName,folderLogName + folderOneName + folderLogExtension));
+        File snapLog = new File(pathFormatter(secondaryFile.getPath(),folderOneName,folderTwoName,snapLogName + folderOneName + folderTwoName + snapLogExtension));
+        if (createSnapLog(snapLog)) return secondaryFile;
+        File folderLog = new File(pathFormatter(secondaryFile.getPath(),folderOneName,folderLogName + folderOneName + folderLogExtension));
         try{
             if (!folderLog.createNewFile()){
-                JOptionPane.showMessageDialog(null,warningMsg + folderLog.getPath(),"Error",JOptionPane.ERROR_MESSAGE);
+                //JOptionPane.showMessageDialog(null,warningMsg + folderLog.getPath(),"Error",JOptionPane.ERROR_MESSAGE);
             }
         }
         catch (IOException ex){
             ex.printStackTrace();
         }
+        return secondaryFile;
+    }
+
+    /**
+     * Creates the snap logger file and initializes it
+     *
+     * @param snaplog : File with path for the snap log
+     * @return : Whether it could be created
+     */
+    private static boolean createSnapLog(File snaplog) {
+        try{
+            if (!snaplog.createNewFile()){
+                JOptionPane.showMessageDialog(null,warningMsg + snaplog.getPath(),"Error",JOptionPane.ERROR_MESSAGE);
+                return true;
+            }
+            initializeFileLogger(snaplog);
+        }
+        catch (IOException ex){
+            ex.printStackTrace();
+        }
+        return false;
     }
 
     /**
@@ -125,8 +144,12 @@ class FileStructure {
     static File makeFile(SnappedImage snappedImage){
         String sequenceID = snappedImage.getId();
         analyseSequenceID(sequenceID);
-        makeDirectory();
-        return new File(pathFormatter(mainFolder,folderOneName,folderTwoName,sequenceID + snapExtension));
+        File secondaryFile = makeDirectory(snappedImage.getFlag());
+        fileLogger(snappedImage);
+        folderLogger();
+        String end = snappedImage.getFlag().equals("Positive") ? "_pos" : "_neg";
+        System.out.println(pathFormatter(secondaryFile.getPath(),folderOneName,folderTwoName,sequenceID + end + snapExtension));
+        return new File(pathFormatter(secondaryFile.getPath(),folderOneName,folderTwoName,sequenceID + end + snapExtension));
     }
 
     /**
@@ -174,7 +197,7 @@ class FileStructure {
      * @param snappedImage : the image to insert into file logger.
      * */
     static void fileLogger(SnappedImage snappedImage){
-        File file = new File(pathFormatter(mainFolder,folderOneName,folderTwoName,snapLogName + folderOneName + folderTwoName + snapLogExtension));
+        File file = new File(pathFormatter(secondaryFile.getPath(),folderOneName,folderTwoName,snapLogName + folderOneName + folderTwoName + snapLogExtension));
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(snappedImage.getId());
         stringBuilder.append("\t");
@@ -202,7 +225,7 @@ class FileStructure {
      * Log folder info into folder logger
      * */
     static void folderLogger(){
-        File folderOne = new File(pathFormatter(mainFolder,folderOneName));
+        File folderOne = new File(pathFormatter(secondaryFile.getPath(),folderOneName));
         int fileCount;
         ArrayList<Integer> fileCountList = new ArrayList<>();
         ArrayList<String> lastDates = new ArrayList<>();
@@ -214,7 +237,7 @@ class FileStructure {
             }
             fileCount = Objects.requireNonNull(folderTwo.listFiles()).length;
             fileCountList.add(fileCount - 1);
-            File logger = new File(pathFormatter(mainFolder, folderOneName, folderTwo.getName(), snapLogName + folderOneName + folderTwo.getName() + snapLogExtension));
+            File logger = new File(pathFormatter(secondaryFile.getPath(), folderOneName, folderTwo.getName(), snapLogName + folderOneName + folderTwo.getName() + snapLogExtension));
             try {
                 BufferedReader br = new BufferedReader(new FileReader(logger));
                 String line;
@@ -230,7 +253,7 @@ class FileStructure {
 
             i++;
         }
-        File folderLog = new File(pathFormatter(mainFolder,folderOneName,folderLogName + folderOneName + folderLogExtension));
+        File folderLog = new File(pathFormatter(secondaryFile.getPath(),folderOneName,folderLogName + folderOneName + folderLogExtension));
         String firstLine = "Folder\tNumber of files\tLast Created";
         int index = 0;
         try {

@@ -49,3 +49,4 @@ class Constants {
     static final int POS_DOWNLEFT = 2;
     static final int POS_DOWNRIGHT = 3;
 }
+

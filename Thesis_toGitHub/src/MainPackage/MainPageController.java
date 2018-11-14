@@ -402,70 +402,15 @@ public class MainPageController {
         vBox2.setPadding(new Insets(10));
         vBox1.getChildren().add(vBox2);
 
-        btnRaw.setOnAction(actionEvent -> {
-            qualityLvl = QUALITY_LEVEL_RAWIMAGE;
-            coordX = position1.get(0).getCoordX();
-            coordY = position1.get(0).getCoordY();
-            qualityLvlManager();
-            for (Object tb: vBox2.getChildren()) {
-                if (tb instanceof ToggleButton) {
-                    ((ToggleButton) tb).setSelected(false);
-                }
-            }
-            ((ToggleButton) actionEvent.getTarget()).setSelected(true);
-        });
+        setOnAction(btnRaw, vBox2, QUALITY_LEVEL_RAWIMAGE);
 
-        btn1024.setOnAction(actionEvent -> {
-            qualityLvl = QUALITY_LEVEL_1024;
-            coordX = position1.get(0).getCoordX();
-            coordY = position1.get(0).getCoordY();
-            qualityLvlManager();
-            for (Object tb: vBox2.getChildren()) {
-                if (tb instanceof ToggleButton) {
-                    ((ToggleButton) tb).setSelected(false);
-                }
-            }
-            ((ToggleButton) actionEvent.getTarget()).setSelected(true);
-        });
+        setOnAction(btn1024, vBox2, QUALITY_LEVEL_1024);
 
-        btn512.setOnAction(actionEvent -> {
-            qualityLvl = QUALITY_LEVEL_512;
-            coordX = position1.get(0).getCoordX();
-            coordY = position1.get(0).getCoordY();
-            qualityLvlManager();
-            for (Object tb: vBox2.getChildren()) {
-                if (tb instanceof ToggleButton) {
-                    ((ToggleButton) tb).setSelected(false);
-                }
-            }
-            ((ToggleButton) actionEvent.getTarget()).setSelected(true);
-        });
+        setOnAction(btn512, vBox2, QUALITY_LEVEL_512);
 
-        btn256.setOnAction(actionEvent -> {
-            qualityLvl = QUALITY_LEVEL_256;
-            coordX = position1.get(0).getCoordX();
-            coordY = position1.get(0).getCoordY();
-            qualityLvlManager();
-            for (Object tb: vBox2.getChildren()) {
-                if (tb instanceof ToggleButton) {
-                    ((ToggleButton) tb).setSelected(false);
-                }
-            }
-            ((ToggleButton) actionEvent.getTarget()).setSelected(true);
-        });
+        setOnAction(btn256, vBox2, QUALITY_LEVEL_256);
 
-        btn128.setOnAction(actionEvent -> {
-            qualityLvl = QUALITY_LEVEL_128;
-            coordX = position1.get(0).getCoordX();
-            coordY = position1.get(0).getCoordY();
-            qualityLvlManager();
-            for (Object tb: vBox2.getChildren()) {
-                if (tb instanceof ToggleButton) {
-                    ((ToggleButton) tb).setSelected(false);
-                }
-            }
-            ((ToggleButton) actionEvent.getTarget()).setSelected(true);
-        });
+        setOnAction(btn128, vBox2, QUALITY_LEVEL_128);
 
         StackPane stackPane = new StackPane();
         stackPane.getChildren().add(grid);
@@ -474,6 +419,21 @@ public class MainPageController {
         main.setLeft(vBox1);
         main.setCenter(stackPane);
         isReady = true;
+    }
+
+    private static void setOnAction(ToggleButton btn, VBox vBox, int qualityLevel) {
+        btn.setOnAction(actionEvent -> {
+            qualityLvl = qualityLevel;
+            coordX = position1.get(0).getCoordX();
+            coordY = position1.get(0).getCoordY();
+            qualityLvlManager();
+            for (Object tb: vBox.getChildren()) {
+                if (tb instanceof ToggleButton) {
+                    ((ToggleButton) tb).setSelected(false);
+                }
+            }
+            ((ToggleButton) actionEvent.getTarget()).setSelected(true);
+        });
     }
 
     /**
