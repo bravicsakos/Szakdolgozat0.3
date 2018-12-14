@@ -1,0 +1,136 @@
+.Custom-Button1 {
+    -fx-background-color: transparent;
+    -fx-padding: 10 10 10 10;
+    -fx-text-fill: #cdcdcd;
+    -fx-font: 16px "Serif";
+}
+
+.Custom-Button1:hover {
+    -fx-text-fill: rgb(67, 160, 185);
+}
+
+.Custom-Button2 {
+    -fx-background-color: rgb(43, 43, 43);
+    -fx-padding: 10 10 10 10;
+    -fx-text-fill: rgb(67, 160, 185);
+    -fx-font: 20px "Serif";
+}
+
+.Custom-Button3 {
+    -fx-background-color: transparent;
+    -fx-padding: 3 10 3 10;
+    -fx-text-fill: #cdcdcd;
+    -fx-font: 14px "Serif";
+    -fx-border-color: rgba(0,0,0,0) rgba(0,0,0,0) rgba(0,0,0,0) #cdcdcd;
+}
+
+.Custom-Button3:hover {
+    -fx-text-fill: rgb(67, 160, 185);
+    -fx-border-color: rgba(0,0,0,0) rgba(0,0,0,0) rgba(0,0,0,0) rgb(67, 160, 185);
+}
+
+.Custom-Button4 {
+    -fx-text-fill: rgb(67, 160, 185);
+    -fx-background-color: transparent;
+    -fx-padding: 10 10 10 10;
+    -fx-font: 20px "Serif";
+}
+
+.Custom-Button4:hover {
+    -fx-background-color: #cdcdcd;
+}
+
+.Custom-Button5 {
+    -fx-background-color: transparent;
+    -fx-padding: 10 10 10 10;
+    -fx-text-fill: rgb(67, 160, 185);
+    -fx-font: 48px "Serif";
+}
+
+.Custom-Button5:hover {
+    -fx-background-color: #cdcdcd;
+}
+
+.Custom-Button6 {
+    -fx-background-color: rgb(60, 63, 65);
+    -fx-padding: 10 10 10 10;
+    -fx-text-fill: rgb(67, 160, 185);
+    -fx-font: 20px "Serif";
+}
+
+.Custom-BackGround {
+    -fx-background-color: rgb(43, 43, 43);
+}
+
+.Custom-HeadBoard {
+    -fx-background-color: rgb(60, 63, 65);
+    -fx-border-color: rgba(0,0,0,0) rgba(0,0,0,0) #cdcdcd rgba(0,0,0,0);
+}
+
+.Custom-Menu {
+    -fx-border-color: transparent rgb(67, 160, 185) transparent transparent;
+}
+
+.Custom-Menu2 {
+    -fx-border-color: transparent transparent transparent rgb(67, 160, 185);
+}
+
+.Custom-Text {
+     -fx-text-fill: #cdcdcd;
+     -fx-font: 14px "Serif";
+}
+
+.Custom-Text2 {
+     -fx-fill: #cdcdcd;
+     -fx-font: 32px "Serif";
+}
+
+.Custom-Text3 {
+     -fx-fill: rgb(67, 160, 185);
+     -fx-font: 16px "Arial Black";
+}
+
+.Custom-BorderOnly {
+    -fx-background-color: rgb(43, 43, 43);
+    -fx-border-color: black black black black;
+}
+
+.Custom-Scroll {
+    -fx-background-color: transparent;
+    -fx-border: none none none none;
+}
+
+.Custom-Scroll .scroll-bar:horizontal, .Custom-Scroll .scroll-bar:vertical{
+    -fx-background-color: transparent;
+ }
+
+
+.Custom-Scroll .increment-arrow, .Custom-Scroll .decrement-arrow, .Custom-Scroll .thumb{
+    -fx-color: rgb(67, 160, 185);
+    -fx-background-color: rgb(67, 160, 185);
+}
+
+.Custom-Error-Text {
+    -fx-fill: #ff6a53;
+    -fx-text-fill: #ff6a53;
+}
+
+.Custom-Toggle-Button {
+    -fx-text-fill: rgb(67, 160, 185);
+    -fx-background-color: transparent;
+    -fx-padding: 10 10 10 10;
+    -fx-font: 20px "Serif";
+}
+
+.Custom-Toggle-Button:hover {
+    -fx-background-color: #cdcdcd;
+}
+
+.Custom-Toggle-Button:selected {
+    -fx-background-color: #cdcdcd;
+}
+
+.Custom-Rectangle {
+    -fx-fill: #ff272f;
+    -fx-border-color: transparent;
+}
